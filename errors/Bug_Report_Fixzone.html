@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bug Report — Fixzone Bangladesh</title>
+  <style>
+    /* ═══════════════════════════════════════════════
+       BASE & RESET
+    ═══════════════════════════════════════════════ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      --orange:       #F27C27;
+      --orange-light: #FFF3E8;
+      --navy:         #1F417F;
+      --navy-light:   #EEF3FB;
+      --red:          #EF4444;
+      --red-light:    #FEF2F2;
+      --amber:        #F59E0B;
+      --amber-light:  #FFFBEB;
+      --green:        #10B981;
+      --green-light:  #ECFDF5;
+      --gray-50:      #F8FAFC;
+      --gray-100:     #F1F5F9;
+      --gray-200:     #E2E8F0;
+      --gray-400:     #94A3B8;
+      --gray-600:     #475569;
+      --gray-700:     #334155;
+      --gray-900:     #0F172A;
+      --white:        #FFFFFF;
+    }
+
+    html { font-size: 13px; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      line-height: 1.65;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ═══════════════════════════════════════════════
+       PDF LAYOUT
+    ═══════════════════════════════════════════════ */
+    @page {
+      size: A4;
+      margin: 14mm 12mm 16mm 12mm;
+    }
+
+    @media print {
+      .no-print { display: none !important; }
+      .page-break { page-break-before: always; }
+      .avoid-break { page-break-inside: avoid; }
+      body { background: white; font-size: 11.5px; }
+      .bug-card { box-shadow: none !important; border: 1px solid var(--gray-200) !important; }
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px 20px 48px;
+    }
+
+    /* ═══════════════════════════════════════════════
+       COVER PAGE
+    ═══════════════════════════════════════════════ */
+    .cover {
+      background: linear-gradient(135deg, var(--gray-900) 0%, #1a2d5a 50%, #0d2040 100%);
+      color: white;
+      border-radius: 18px;
+      padding: 52px 48px 44px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(242,124,39,0.25) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .cover::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -40px;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(31,65,127,0.4) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .cover-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 36px;
+      position: relative; z-index: 1;
+    }
+    .cover-logo-icon {
+      width: 48px; height: 48px;
+      background: var(--orange);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 900;
+      color: white;
+      flex-shrink: 0;
+    }
+    .cover-logo-text {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .cover-logo-text span { color: var(--orange); }
+    .cover-subtitle {
+      font-size: 11px;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .cover-title {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+      position: relative; z-index: 1;
+    }
+    .cover-title .accent { color: var(--orange); }
+    .cover-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      max-width: 520px;
+      margin-bottom: 32px;
+      position: relative; z-index: 1;
+    }
+    .cover-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      position: relative; z-index: 1;
+    }
+    .cover-meta-item { }
+    .cover-meta-item .label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 3px;
+    }
+    .cover-meta-item .value {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.92);
+    }
+
+    /* ═══════════════════════════════════════════════
+       SUMMARY DASHBOARD
+    ═══════════════════════════════════════════════ */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .summary-card {
+      background: var(--white);
+      border-radius: 14px;
+      padding: 20px 16px;
+      text-align: center;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .summary-card .big-num {
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .summary-card .label {
+      font-size: 11px;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .summary-card.total .big-num { color: var(--navy); }
+    .summary-card.critical .big-num { color: var(--red); }
+    .summary-card.high .big-num { color: var(--orange); }
+    .summary-card.medium .big-num { color: var(--amber); }
+
+    /* ═══════════════════════════════════════════════
+       PRIORITY TABLE
+    ═══════════════════════════════════════════════ */
+    .priority-table-wrap {
+      background: var(--white);
+      border-radius: 14px;
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+      margin-bottom: 36px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .priority-table-wrap h3 {
+      font-size: 13px;
+      font-weight: 700;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gray-200);
+      color: var(--gray-700);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--gray-50);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      background: var(--gray-50);
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    td {
+      padding: 10px 16px;
+      font-size: 12px;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-700);
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--gray-50); }
+
+    /* ═══════════════════════════════════════════════
+       SECTION HEADERS
+    ═══════════════════════════════════════════════ */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 20px 24px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      margin-top: 10px;
+    }
+    .section-header.design { background: linear-gradient(135deg, #FFF3E8, #FEF9F3); border-left: 4px solid var(--orange); }
+    .section-header.loading { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); border-left: 4px solid var(--navy); }
+    .section-header.functional { background: linear-gradient(135deg, #FEF2F2, #FFE4E4); border-left: 4px solid var(--red); }
+    .section-icon {
+      font-size: 30px;
+      line-height: 1;
+    }
+    .section-header h2 {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--gray-900);
+    }
+    .section-header p {
+      font-size: 12px;
+      color: var(--gray-600);
+      margin-top: 2px;
+    }
+    .section-count {
+      margin-left: auto;
+      background: white;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray-700);
+      border: 1px solid var(--gray-200);
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════════════════════
+       BUG CARDS
+    ═══════════════════════════════════════════════ */
+    .bug-card {
+      background: var(--white);
+      border-radius: 14px;
+      border: 1px solid var(--gray-200);
+      margin-bottom: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+    .bug-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .bug-header.critical { background: linear-gradient(90deg, #FEF2F2, var(--white)); }
+    .bug-header.high     { background: linear-gradient(90deg, #FFF7ED, var(--white)); }
+    .bug-header.medium   { background: linear-gradient(90deg, #FFFBEB, var(--white)); }
+    .bug-header.low      { background: linear-gradient(90deg, #F0FDF4, var(--white)); }
+
+    .bug-id {
+      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-600);
+      background: var(--gray-100);
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .bug-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--gray-900);
+      flex: 1;
+    }
+    .severity-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+    }
+    .severity-badge.critical { background: var(--red-light); color: var(--red); }
+    .severity-badge.high     { background: var(--orange-light); color: #C05C00; }
+    .severity-badge.medium   { background: var(--amber-light); color: #92400E; }
+    .severity-badge.low      { background: var(--green-light); color: #065F46; }
+
+    .bug-body { padding: 14px 18px; }
+    .bug-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+    .bug-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+    }
+    .bug-meta-item .meta-label {
+      color: var(--gray-400);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+    .bug-meta-item .meta-value {
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: var(--navy);
+      background: var(--navy-light);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .bug-description {
+      font-size: 12.5px;
+      color: var(--gray-700);
+      margin-bottom: 12px;
+      line-height: 1.7;
+    }
+    .bug-description strong { color: var(--gray-900); }
+
+    .steps-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--gray-500);
+      margin-bottom: 5px;
+    }
+    .steps-list {
+      list-style: none;
+      padding: 0;
+    }
+    .steps-list li {
+      display: flex;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--gray-600);
+      margin-bottom: 5px;
+      align-items: flex-start;
+    }
+    .step-num {
+      background: var(--navy);
+      color: white;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .expected-actual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .ea-box {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 11.5px;
+    }
+    .ea-box .ea-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .ea-box.expected { background: #F0FDF4; border-left: 3px solid var(--green); }
+    .ea-box.expected .ea-label { color: #065F46; }
+    .ea-box.actual   { background: #FEF2F2; border-left: 3px solid var(--red); }
+    .ea-box.actual .ea-label { color: var(--red); }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      background: var(--gray-100);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--navy);
+    }
+
+    /* ═══════════════════════════════════════════════
+       SCREENSHOT GRID
+    ═══════════════════════════════════════════════ */
+    .screenshots-section {
+      margin-top: 36px;
+    }
+    .screenshots-section h2 {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: var(--gray-900);
+    }
+    .screenshot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .screenshot-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .screenshot-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+    }
+    .screenshot-card .sc-label {
+      padding: 10px 14px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--gray-700);
+      border-top: 1px solid var(--gray-100);
+    }
+    .screenshot-card .sc-bugs {
+      padding: 0 14px 10px;
+      font-size: 10.5px;
+      color: var(--gray-400);
+    }
+
+    /* ═══════════════════════════════════════════════
+       FIX PRIORITY TABLE
+    ═══════════════════════════════════════════════ */
+    .priority-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .p1 { background: #FEF2F2; color: var(--red); }
+    .p2 { background: var(--orange-light); color: #C05C00; }
+    .p3 { background: var(--amber-light); color: #92400E; }
+
+    /* ═══════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════ */
+    .doc-footer {
+      margin-top: 48px;
+      padding: 20px 24px;
+      background: var(--gray-900);
+      border-radius: 14px;
+      color: rgba(255,255,255,0.5);
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .doc-footer strong { color: rgba(255,255,255,0.85); }
+
+    /* ═══════════════════════════════════════════════
+       PRINT BUTTON (not printed)
+    ═══════════════════════════════════════════════ */
+    .print-btn {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(242,124,39,0.45);
+      z-index: 999;
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .print-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(242,124,39,0.55); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ════════════════════════ COVER ════════════════════════ -->
+  <div class="cover">
+    <div class="cover-brand">
+      <div class="cover-logo-icon">F</div>
+      <div>
+        <div class="cover-logo-text">Fix<span>zone</span></div>
+        <div class="cover-subtitle">fixzone.com.bd</div>
+      </div>
+    </div>
+    <div class="cover-title">Website <span class="accent">Bug Report</span></div>
+    <p class="cover-desc">
+      A comprehensive quality assurance audit of Fixzone Bangladesh covering design flaws, loading issues, and functional bugs discovered via live browser inspection and source code analysis.
+    </p>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <div class="label">Audit Date</div>
+        <div class="value">September 11, 2026</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="label">Audited By</div>
+        <div class="value">Antigravity QA Engineering</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="label">Document Version</div>
+        <div class="value">v1.0</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="label">Target URL</div>
+        <div class="value">https://fixzone.com.bd</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ SUMMARY DASHBOARD ════════════════════════ -->
+  <div class="summary-grid">
+    <div class="summary-card total">
+      <div class="big-num">26</div>
+      <div class="label">Total Bugs</div>
+    </div>
+    <div class="summary-card critical">
+      <div class="big-num">6</div>
+      <div class="label">🔴 Critical</div>
+    </div>
+    <div class="summary-card high">
+      <div class="big-num">10</div>
+      <div class="label">🟠 High</div>
+    </div>
+    <div class="summary-card medium">
+      <div class="big-num">7</div>
+      <div class="label">🟡 Medium / Low</div>
+    </div>
+  </div>
+
+  <!-- Category breakdown mini table -->
+  <div class="priority-table-wrap avoid-break" style="margin-bottom: 36px;">
+    <h3>Bug Categories Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Total</th>
+          <th>🔴 Critical</th>
+          <th>🟠 High</th>
+          <th>🟡 Medium</th>
+          <th>🟢 Low</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>🎨 Design Flaws</strong></td>
+          <td><strong>10</strong></td><td>2</td><td>4</td><td>2</td><td>2</td>
+        </tr>
+        <tr>
+          <td><strong>⏳ Loading Flaws</strong></td>
+          <td><strong>6</strong></td><td>2</td><td>2</td><td>2</td><td>0</td>
+        </tr>
+        <tr>
+          <td><strong>⚙️ Functional / Other</strong></td>
+          <td><strong>10</strong></td><td>3</td><td>4</td><td>2</td><td>1</td>
+        </tr>
+        <tr style="background:#F8FAFC; font-weight:700;">
+          <td>TOTAL</td>
+          <td>26</td><td>7</td><td>10</td><td>6</td><td>3</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════════════════════════ SECTION 1: DESIGN ════════════════════════ -->
+  <div class="section-header design avoid-break">
+    <div class="section-icon">🎨</div>
+    <div>
+      <h2>Section 1 — Design Flaws</h2>
+      <p>Visual, layout, CSS, typography, and branding inconsistencies</p>
+    </div>
+    <div class="section-count">10 bugs found</div>
+  </div>
+
+  <!-- BUG-DESIGN-001 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header critical">
+      <span class="bug-id">BUG-DESIGN-001</span>
+      <span class="bug-title">Wrong Image in "How It Works" Section (VR Headset)</span>
+      <span class="severity-badge critical">🔴 Critical</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">Homepage /</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">How It Works</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Type</span><span class="meta-value">Wrong Content</span></div>
+      </div>
+      <p class="bug-description">The "How It Works" section (01 Choose a Service → 02 Book a Schedule → 03 Get it Done) displays a <strong>VR/AR headset (Oculus Meta Quest)</strong> as its main illustration. This is completely unrelated to home services (AC repair, plumbing, cleaning). It severely damages brand credibility and confuses first-time visitors.</p>
+      <div class="steps-label">Steps to Reproduce</div>
+      <ul class="steps-list">
+        <li><span class="step-num">1</span>Open <code>https://fixzone.com.bd/</code></li>
+        <li><span class="step-num">2</span>Scroll down past the hero section</li>
+        <li><span class="step-num">3</span>Find the "How It Works" section — observe the image on the left</li>
+      </ul>
+      <div class="expected-actual">
+        <div class="ea-box expected">
+          <div class="ea-label">✅ Expected</div>
+          A relevant image such as a technician fixing an AC, a plumber, or a service booking illustration
+        </div>
+        <div class="ea-box actual">
+          <div class="ea-label">❌ Actual</div>
+          A VR/AR headset (Oculus Meta Quest) with a play-button overlay
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-DESIGN-002 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header high">
+      <span class="bug-id">BUG-DESIGN-002</span>
+      <span class="bug-title">Hero Headline Uses Off-Brand Yellow Color</span>
+      <span class="severity-badge high">🟠 High</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">Homepage /</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Hero Banner Headline</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Type</span><span class="meta-value">Brand Inconsistency</span></div>
+      </div>
+      <p class="bug-description">The main hero headline "Smarter services for a simpler life" is rendered in a <strong>bright canary yellow</strong> that is not part of the Fixzone brand palette (orange <code>#F27C27</code> + navy <code>#1F417F</code>). This creates brand inconsistency and a jarring contrast against the dark hero background.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>White, brand orange, or navy color matching the design system</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Bright yellow not in the Fixzone brand color system</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-DESIGN-003 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header high">
+      <span class="bug-id">BUG-DESIGN-003</span>
+      <span class="bug-title">Package Names Truncated with No Tooltip in Service Details Cart</span>
+      <span class="severity-badge high">🟠 High</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/services/[slug]</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Select Package</span></div>
+      </div>
+      <p class="bug-description">Package names inside the "Select package" card are <strong>hard-truncated with ellipsis</strong> ("AC Master Service - I...") and no tooltip is provided on hover. Users cannot determine which package they are selecting, especially when multiple options exist.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Full package name visible or a tooltip on hover revealing the complete text</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Text clipped: "AC Master Service - I..." with no accessible alternative</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-DESIGN-004 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header medium">
+      <span class="bug-id">BUG-DESIGN-004</span>
+      <span class="bug-title">"BOOK SERVICE" Nav Button Uses Wrong Color (Teal Instead of Orange)</span>
+      <span class="severity-badge medium">🟡 Medium</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">All Pages</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Navigation Header</span></div>
+      </div>
+      <p class="bug-description">The "BOOK SERVICE" button is styled in <strong>teal/cyan</strong> (<code>#06B6D4</code>) while every other CTA (Search button, Sign In button, orange badges) uses brand orange <code>#F27C27</code>. This creates a confusing two-CTA-color situation where users cannot identify the primary action color.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Orange <code>#F27C27</code> consistent with all other CTA elements</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Teal/cyan color that is the "accent" color, not the CTA primary</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-DESIGN-005 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header high">
+      <span class="bug-id">BUG-DESIGN-005</span>
+      <span class="bug-title">Floating "Back to Top" Button Overlaps Chat Widget</span>
+      <span class="severity-badge high">🟠 High</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">All Scrollable Pages</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Bottom-right floating elements</span></div>
+      </div>
+      <p class="bug-description">The <strong>"Back to Top" (↑)</strong> arrow button and the <strong>"Talk to our team →"</strong> chat widget are both anchored to the bottom-right corner. When both appear simultaneously (after scrolling), they visually overlap, making both partially inaccessible.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Stacked vertically with clear spacing (e.g., 64px gap between elements)</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Elements crowd the same corner position and overlap</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-DESIGN-006 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header medium">
+      <span class="bug-id">BUG-DESIGN-006</span>
+      <span class="bug-title">Location Shows Raw Geocoder String "1no Sarak" on 3 Pages</span>
+      <span class="severity-badge medium">🟡 Medium</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Pages</span><span class="meta-value">/services, /about, /contact</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Location subheading</span></div>
+      </div>
+      <p class="bug-description">The GPS reverse-geocoder is returning a raw local road name <strong>"1no Sarak"</strong> (informal Bangla for "Road No. 1") which appears verbatim in the site's location-aware labels. This is confusing to English-speaking users and appears unprofessional. Visible as: <code>Area: 1no Sarak.</code>, <code>Serving: 1no Sarak</code>, and <code>Serving context: 1no Sarak</code>.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Display "Faridpur Sadar" or "Faridpur, Bangladesh" as the clean location string</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Raw geocoder result "1no Sarak" shown verbatim on 3 separate pages</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-DESIGN-007 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header high">
+      <span class="bug-id">BUG-DESIGN-007</span>
+      <span class="bug-title">Contact Page Exposes Internal Admin Subject Label to End Users</span>
+      <span class="severity-badge high">🟠 High</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/contact</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Topic Selector</span></div>
+      </div>
+      <p class="bug-description">Below the contact topic buttons (General, Booking, Billing, Partnership, Press), the label <strong>"Subject line for admins: <code>General inquiry</code>"</strong> is rendered visibly in the user-facing form. This is an internal routing/admin field that should never appear in the frontend UI.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Admin subject line mapping is backend-only; completely hidden from users</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>"Subject line for admins: General inquiry" displayed in code font to all visitors</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-DESIGN-008 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header critical">
+      <span class="bug-id">BUG-DESIGN-008</span>
+      <span class="bug-title">About Page Statistics Cards All Display "0"</span>
+      <span class="severity-badge critical">🔴 Critical</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/about</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Statistics Cards</span></div>
+      </div>
+      <p class="bug-description">All four stat counter cards on the About page display <strong>"0"</strong> — Categories: 0, Services: 0, Areas Covered: 0, Active Deals: 0. The actual platform has 6 categories, 9 services, and 28 live areas (confirmed on other pages). This makes the business appear inactive.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Live data: Categories: 6, Services: 9, Areas: 28, Active Deals: [actual value]</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>All four counter cards show 0 even after full page load completes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-DESIGN-009 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header low">
+      <span class="bug-id">BUG-DESIGN-009</span>
+      <span class="bug-title">Login Page Logo Renders as Font Fallback Character</span>
+      <span class="severity-badge low">🟢 Low</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/login</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Left branding panel</span></div>
+      </div>
+      <p class="bug-description">The logo on the dark left panel of the login page renders as a styled font character ("F" frame) rather than the full Fixzone PNG logo. The main site header and other pages use the correct PNG logo image.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Full Fixzone PNG logo consistent with all other pages in the header</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Font icon character rendering instead of the proper logo image</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-DESIGN-010 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header low">
+      <span class="bug-id">BUG-DESIGN-010</span>
+      <span class="bug-title">Register Page Uses a Completely Different Logo Style</span>
+      <span class="severity-badge low">🟢 Low</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/register</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Form header</span></div>
+      </div>
+      <p class="bug-description">The registration page uses an <strong>orange circle badge with a wrench icon + "FIXZONE" wordmark</strong> as the header. This is visually different from the main site's Fixzone logo (stylized "F" + text). Two different logo treatments across auth pages create brand fragmentation.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Consistent Fixzone logo across all pages (same PNG as in the main nav)</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Alternate icon badge + wordmark used exclusively on the register page</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ SECTION 2: LOADING ════════════════════════ -->
+  <div class="section-header loading avoid-break" style="margin-top: 28px;">
+    <div class="section-icon">⏳</div>
+    <div>
+      <h2>Section 2 — Loading Flaws</h2>
+      <p>Slow rendering, client-side bailouts, stuck spinners, and data-fetch failures</p>
+    </div>
+    <div class="section-count">6 bugs found</div>
+  </div>
+
+  <!-- BUG-LOAD-001 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header critical">
+      <span class="bug-id">BUG-LOAD-001</span>
+      <span class="bug-title">Splash Screen Can Permanently Block Content if JavaScript Fails</span>
+      <span class="severity-badge critical">🔴 Critical</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">All Pages (Global)</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Splash overlay</span></div>
+      </div>
+      <p class="bug-description">A full-screen gradient splash screen ("Loading latest services and offers…") blocks all page content until JavaScript resolves. If JS fails to load (CDN down, network drop, or JS error), the splash screen <strong>never dismisses</strong>, permanently blocking the entire website — users see only a gradient background with the logo.</p>
+      <div class="steps-label">Steps to Reproduce</div>
+      <ul class="steps-list">
+        <li><span class="step-num">1</span>Open DevTools → Network → set throttling to "Slow 3G"</li>
+        <li><span class="step-num">2</span>Reload <code>https://fixzone.com.bd/</code></li>
+        <li><span class="step-num">3</span>Observe splash screen persisting indefinitely</li>
+      </ul>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Hard timeout (max 3–5s) that always dismisses the splash regardless of JS state</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Splash is entirely JS-dependent with no fallback or maximum display time</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-LOAD-002 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header critical">
+      <span class="bug-id">BUG-LOAD-002</span>
+      <span class="bug-title">Services Page Fully Client-Side Rendered — Invisible to Search Engines</span>
+      <span class="severity-badge critical">🔴 Critical</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/services</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Entire page content</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Type</span><span class="meta-value">SEO / Performance</span></div>
+      </div>
+      <p class="bug-description">The services page source contains <code>BAILOUT_TO_CLIENT_SIDE_RENDERING</code> (Next.js signal that SSR was skipped). The entire catalog depends on client-side JS. <strong>Google, Bing, and other crawlers cannot index service listings.</strong> On slow connections, users see only a white page with a single spinner.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Service cards server-side rendered or statically generated (SSG) in initial HTML</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Empty HTML shell + 3× BAILOUT_TO_CLIENT_SIDE_RENDERING — zero SEO content</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-LOAD-003 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header high">
+      <span class="bug-id">BUG-LOAD-003</span>
+      <span class="bug-title">Homepage Also Bails Out to Client-Side Rendering (3 Instances)</span>
+      <span class="severity-badge high">🟠 High</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/ (Homepage)</span></div>
+      </div>
+      <p class="bug-description">The homepage source also contains <strong>3 instances</strong> of <code>BAILOUT_TO_CLIENT_SIDE_RENDERING</code> covering the navbar, main content, and footer. This causes poor Core Web Vitals (high LCP), delays for first-time visitors, and reduces Google's ability to index homepage content effectively.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Hero section, featured services, and CTAs are server-rendered in initial HTML</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>3× client-side bailouts — high LCP, poor SEO, delayed first paint</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-LOAD-004 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header high">
+      <span class="bug-id">BUG-LOAD-004</span>
+      <span class="bug-title">About Page Stats API Fails Silently — Counters Stuck at 0</span>
+      <span class="severity-badge high">🟠 High</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/about</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Statistics counter cards</span></div>
+      </div>
+      <p class="bug-description">The About page statistics (Categories, Services, Areas, Active deals) all show <strong>0</strong> even after the page finishes loading. The client-side API call to fetch live platform stats either fails, returns an error silently, or is never made. There is no error message or retry mechanism.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Dynamic API call returns: Categories: 6, Services: 9, Areas: 28, Deals: [N]</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>All 4 counters permanently display 0 with no error state or loading indicator</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-LOAD-005 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header medium">
+      <span class="bug-id">BUG-LOAD-005</span>
+      <span class="bug-title">Package Card Thumbnail Images Appear Blurry / Low-Resolution</span>
+      <span class="severity-badge medium">🟡 Medium</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/services/[slug]</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Package selection cards</span></div>
+      </div>
+      <p class="bug-description">Thumbnail images inside the package selection cards appear at <strong>very low resolution and pixelated quality</strong> at their rendered size. No <code>srcSet</code> or responsive image optimization is applied, causing blurry output especially on HiDPI/Retina displays.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Sharp images at all densities using <code>srcSet</code> with 1x and 2x resolution variants</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Single low-res image source served to all devices — blurry on HD screens</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-LOAD-006 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header medium">
+      <span class="bug-id">BUG-LOAD-006</span>
+      <span class="bug-title">No Skeleton / Shimmer Loading State for Service Card Grid</span>
+      <span class="severity-badge medium">🟡 Medium</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/services</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Service card grid</span></div>
+      </div>
+      <p class="bug-description">When the services catalog is loading data, there is no skeleton card UI. Instead users see a <strong>single small spinner centered on a plain grey background</strong>, which makes the page feel completely empty and broken, especially on slower connections.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Shimmer skeleton cards fill the grid area while data loads (industry standard)</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Lone spinner on an empty grey page — poor perceived performance</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ SECTION 3: FUNCTIONAL ════════════════════════ -->
+  <div class="section-header functional avoid-break" style="margin-top: 28px;">
+    <div class="section-icon">⚙️</div>
+    <div>
+      <h2>Section 3 — Functional / Other Bugs</h2>
+      <p>Logic errors, broken features, missing validations, and UX problems</p>
+    </div>
+    <div class="section-count">10 bugs found</div>
+  </div>
+
+  <!-- BUG-FUNC-001 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header critical">
+      <span class="bug-id">BUG-FUNC-001</span>
+      <span class="bug-title">"BOOK SERVICE" Nav CTA Routes to /register Instead of /services</span>
+      <span class="severity-badge critical">🔴 Critical</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">All Pages</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Navigation Header</span></div>
+      </div>
+      <p class="bug-description">The "BOOK SERVICE" button in the navigation header is labelled as a booking action but clicking it takes the user directly to <strong>/register</strong> (the sign-up page) instead of the services catalog. Unauthenticated users who want to browse services before registering are forced into a registration flow prematurely, violating the standard service discovery → booking funnel.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Routes to <code>/services</code> so users can browse before being asked to register</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Routes directly to <code>/register</code> — bypasses service discovery entirely</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-FUNC-002 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header medium">
+      <span class="bug-id">BUG-FUNC-002</span>
+      <span class="bug-title">Contact Page Shows "28 LIVE AREAS" with No Coverage List Available</span>
+      <span class="severity-badge medium">🟡 Medium</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/contact</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Left info panel</span></div>
+      </div>
+      <p class="bug-description">The contact page prominently displays <strong>"28 LIVE AREAS"</strong> as a statistic, but there is no coverage map, list, or link anywhere on the website showing which 28 areas Fixzone serves. Users from outside Faridpur cannot determine if they are within the service zone.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>A coverage map or "View areas" link listing all 28 zones served by Fixzone</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>The number is displayed with no linked details or area discovery mechanism</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-FUNC-003 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header critical">
+      <span class="bug-id">BUG-FUNC-003</span>
+      <span class="bug-title">Checkout Accessible with Empty Cart via Direct URL</span>
+      <span class="severity-badge critical">🔴 Critical</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/checkout</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Cart guard</span></div>
+      </div>
+      <p class="bug-description">Authenticated users can navigate directly to <code>/checkout</code> with <strong>zero items in their cart</strong> via a direct URL. This could result in ৳0 orders being created in the database if form submission is not also blocked server-side, causing database integrity issues.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Redirect to <code>/services</code> immediately OR show a clear empty-cart state with a locked Place Order button</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Checkout page accessible with potentially submittable ৳0 order form</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-FUNC-004 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header critical">
+      <span class="bug-id">BUG-FUNC-004</span>
+      <span class="bug-title">No OTP or Email Verification on New Account Registration</span>
+      <span class="severity-badge critical">🔴 Critical</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/register</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Type</span><span class="meta-value">Security</span></div>
+      </div>
+      <p class="bug-description">The registration form creates an account instantly using only Name, Phone, Email, and Password — with <strong>no OTP or email verification step</strong>. This means anyone can create accounts using fake phone numbers or email addresses they don't own, enabling spam accounts, fake reviews, and potential fraud.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>OTP sent to phone number (or verification email link) required before account activation</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Account created immediately with no identity ownership verification</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-FUNC-005 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header medium">
+      <span class="bug-id">BUG-FUNC-005</span>
+      <span class="bug-title">Hero Search Bar Enter Key May Not Submit (Keyboard Accessibility)</span>
+      <span class="severity-badge medium">🟡 Medium</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/ (Homepage)</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Hero search bar</span></div>
+      </div>
+      <p class="bug-description">The hero search bar's keyboard behavior (pressing <strong>Enter</strong> to submit) is not verified. If the input is not inside a proper <code>&lt;form&gt;</code> element, Enter key presses will not trigger navigation to <code>/services?q=[query]</code>, breaking keyboard-only users and assistive technology flows.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Pressing Enter inside the search bar navigates to <code>/services?q=[query]</code> identically to clicking Search</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Enter key behavior unverified — may silently do nothing for keyboard users</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-FUNC-006 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header high">
+      <span class="bug-id">BUG-FUNC-006</span>
+      <span class="bug-title">Location Refresh Icon Provides No Visual Feedback</span>
+      <span class="severity-badge high">🟠 High</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/ (Homepage)</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Location bar</span></div>
+      </div>
+      <p class="bug-description">Clicking the directional/refresh arrow next to "Location: Faridpur →" triggers a geolocation update, but provides <strong>no loading spinner, animation, or confirmation</strong>. On mobile, geolocation can take 3–10 seconds. Users have no indication whether the action is processing or has completed.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Brief "Locating…" spinner during geolocation; success message updates the label</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>No feedback at all — the click feels broken</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-FUNC-007 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header high">
+      <span class="bug-id">BUG-FUNC-007</span>
+      <span class="bug-title">Services Page Title Tag Too Generic — Missing Location Keywords (SEO)</span>
+      <span class="severity-badge high">🟠 High</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/services</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">HTML &lt;title&gt; tag</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Type</span><span class="meta-value">SEO</span></div>
+      </div>
+      <p class="bug-description">The Services page title is <code>"Home Services &amp; Repairs | Fixzone"</code> — generic, with no mention of <strong>Faridpur</strong> or Bangladesh. Since Fixzone's market is location-specific, omitting location keywords from the most important SEO signal (the title tag) significantly reduces local search ranking potential.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div><code>AC Repair, Plumbing &amp; Home Services in Faridpur | Fixzone</code></div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div><code>Home Services &amp; Repairs | Fixzone</code> — no city/location keyword</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-FUNC-008 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header high">
+      <span class="bug-id">BUG-FUNC-008</span>
+      <span class="bug-title">Register Page Has No "Already Have an Account? Sign In" Link</span>
+      <span class="severity-badge high">🟠 High</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/register</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Type</span><span class="meta-value">UX / Navigation</span></div>
+      </div>
+      <p class="bug-description">The register page has <strong>no link back to the login page</strong>. Users who land on <code>/register</code> when they meant to log in must use the browser back button or manually type <code>/login</code>. This breaks the standard authentication UX convention and adds friction.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>"Already have an account? <strong>Sign In →</strong>" link visible below or inside the registration form</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>No such link exists — users trapped on the register page</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-FUNC-009 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header low">
+      <span class="bug-id">BUG-FUNC-009</span>
+      <span class="bug-title">Login Input Placeholder Has Typo: "hame@email.com"</span>
+      <span class="severity-badge low">🟢 Low</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/login</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Email/Phone input field</span></div>
+      </div>
+      <p class="bug-description">The email/phone input field on the login page displays the placeholder text <strong>"hame@email.com or 01XXXXXXXXX"</strong>. The word "hame" is a <strong>typo</strong> — it should be "name" or a proper example such as "email@example.com". This is shown to every single user who visits the login page.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Placeholder: <code>"name@email.com or 01XXXXXXXXX"</code></div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Placeholder: <code>"hame@email.com or 01XXXXXXXXX"</code> — visible typo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUG-FUNC-010 -->
+  <div class="bug-card avoid-break">
+    <div class="bug-header high">
+      <span class="bug-id">BUG-FUNC-010</span>
+      <span class="bug-title">Contact Form Success/Failure Feedback Not Confirmed After Submission</span>
+      <span class="severity-badge high">🟠 High</span>
+    </div>
+    <div class="bug-body">
+      <div class="bug-meta-row">
+        <div class="bug-meta-item"><span class="meta-label">Page</span><span class="meta-value">/contact</span></div>
+        <div class="bug-meta-item"><span class="meta-label">Section</span><span class="meta-value">Contact form</span></div>
+      </div>
+      <p class="bug-description">After submitting the "Send a secure message" form, it is not confirmed whether a <strong>success toast or confirmation message</strong> is reliably displayed. Without clear visual feedback, users may submit the form multiple times thinking it failed, resulting in duplicate support tickets.</p>
+      <div class="expected-actual">
+        <div class="ea-box expected"><div class="ea-label">✅ Expected</div>Clear success banner: "✅ Message sent! We'll get back to you within 24h." + form resets</div>
+        <div class="ea-box actual"><div class="ea-label">❌ Actual</div>Confirmation feedback unverified — may be absent or not prominent enough</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ PRIORITY FIX LIST ════════════════════════ -->
+  <div class="priority-table-wrap page-break avoid-break" style="margin-top: 32px;">
+    <h3>🏆 Recommended Fix Priority Order</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Bug ID</th>
+          <th>Title</th>
+          <th>Priority</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><code>BUG-DESIGN-001</code></td><td>VR headset wrong image</td><td><span class="priority-badge p1">FIX NOW</span></td><td>Destroys brand credibility instantly</td></tr>
+        <tr><td>2</td><td><code>BUG-DESIGN-008</code></td><td>About page stats all showing 0</td><td><span class="priority-badge p1">FIX NOW</span></td><td>Business appears inactive/abandoned</td></tr>
+        <tr><td>3</td><td><code>BUG-LOAD-002</code></td><td>Services page not server-rendered</td><td><span class="priority-badge p1">FIX NOW</span></td><td>Google cannot index any services — SEO critical</td></tr>
+        <tr><td>4</td><td><code>BUG-LOAD-001</code></td><td>Splash screen never dismisses if JS fails</td><td><span class="priority-badge p1">FIX NOW</span></td><td>Full site blackout risk on network drop</td></tr>
+        <tr><td>5</td><td><code>BUG-FUNC-004</code></td><td>No OTP verification on registration</td><td><span class="priority-badge p1">FIX NOW</span></td><td>Security / fraud vulnerability</td></tr>
+        <tr><td>6</td><td><code>BUG-FUNC-001</code></td><td>Book Service routes to /register</td><td><span class="priority-badge p1">FIX NOW</span></td><td>Primary CTA sends users to wrong flow</td></tr>
+        <tr><td>7</td><td><code>BUG-FUNC-003</code></td><td>Empty cart checkout accessible</td><td><span class="priority-badge p1">FIX NOW</span></td><td>Database integrity risk (৳0 orders)</td></tr>
+        <tr><td>8</td><td><code>BUG-DESIGN-007</code></td><td>Admin subject label visible to users</td><td><span class="priority-badge p2">HIGH</span></td><td>Internal data exposed in UI</td></tr>
+        <tr><td>9</td><td><code>BUG-FUNC-009</code></td><td>"hame@email.com" typo on login</td><td><span class="priority-badge p2">HIGH</span></td><td>Quick 1-minute fix, high visibility</td></tr>
+        <tr><td>10</td><td><code>BUG-DESIGN-003</code></td><td>Package names truncated</td><td><span class="priority-badge p2">HIGH</span></td><td>Users can't read what they're buying</td></tr>
+        <tr><td>11</td><td><code>BUG-DESIGN-006</code></td><td>"1no Sarak" raw geocoder string</td><td><span class="priority-badge p2">HIGH</span></td><td>Unprofessional label on 3 pages</td></tr>
+        <tr><td>12</td><td><code>BUG-FUNC-008</code></td><td>No "Sign In" link on register page</td><td><span class="priority-badge p2">HIGH</span></td><td>Breaks standard auth UX convention</td></tr>
+        <tr><td>13</td><td><code>BUG-DESIGN-004</code></td><td>Wrong CTA button color</td><td><span class="priority-badge p3">MEDIUM</span></td><td>Brand inconsistency across all pages</td></tr>
+        <tr><td>14</td><td><code>BUG-DESIGN-005</code></td><td>Back-to-Top overlaps chat widget</td><td><span class="priority-badge p3">MEDIUM</span></td><td>Floating UI elements conflict</td></tr>
+        <tr><td>15</td><td><code>BUG-LOAD-006</code></td><td>No skeleton loading state</td><td><span class="priority-badge p3">MEDIUM</span></td><td>Poor perceived performance</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ════════════════════════ SCREENSHOTS ════════════════════════ -->
+  <div class="screenshots-section page-break">
+    <h2>📸 Evidence — Page Screenshots</h2>
+    <div class="screenshot-grid">
+      <div class="screenshot-card">
+        <img src="screenshots/homepage_hero.png" alt="Homepage Hero" />
+        <div class="sc-label">Homepage — Hero Section</div>
+        <div class="sc-bugs">Evidence for: BUG-DESIGN-002, BUG-DESIGN-004, BUG-FUNC-006</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="screenshots/homepage_how_it_works.png" alt="How It Works Section" />
+        <div class="sc-label">Homepage — How It Works Section</div>
+        <div class="sc-bugs">Evidence for: BUG-DESIGN-001 (VR headset), BUG-DESIGN-005 (overlap)</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="screenshots/services_page.png" alt="Services Page" />
+        <div class="sc-label">Services Catalog Page (/services)</div>
+        <div class="sc-bugs">Evidence for: BUG-DESIGN-006 ("1no Sarak"), BUG-LOAD-002</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="screenshots/service_detail.png" alt="Service Detail Page" />
+        <div class="sc-label">AC Master Service Detail Page</div>
+        <div class="sc-bugs">Evidence for: BUG-DESIGN-003 (truncated names), BUG-LOAD-005</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="screenshots/login_page.png" alt="Login Page" />
+        <div class="sc-label">Login Page (/login)</div>
+        <div class="sc-bugs">Evidence for: BUG-FUNC-009 ("hame@" typo), BUG-DESIGN-009</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="screenshots/register_page.png" alt="Register Page" />
+        <div class="sc-label">Register Page (/register)</div>
+        <div class="sc-bugs">Evidence for: BUG-DESIGN-010 (alt logo), BUG-FUNC-008, BUG-FUNC-004</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="screenshots/about_page.png" alt="About Page" />
+        <div class="sc-label">About Page (/about)</div>
+        <div class="sc-bugs">Evidence for: BUG-DESIGN-008 (stats = 0), BUG-DESIGN-006</div>
+      </div>
+      <div class="screenshot-card">
+        <img src="screenshots/contact_page.png" alt="Contact Page" />
+        <div class="sc-label">Contact Page (/contact)</div>
+        <div class="sc-bugs">Evidence for: BUG-DESIGN-007 (admin label), BUG-FUNC-002, BUG-FUNC-010</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ FOOTER ════════════════════════ -->
+  <div class="doc-footer">
+    <div>
+      <strong>Fixzone Bug Report v1.0</strong> — Confidential QA Document<br />
+      Prepared for Fixzone Bangladesh development team
+    </div>
+    <div style="text-align: right;">
+      <strong>26 bugs</strong> found across 7 pages<br />
+      admin@fixzone.com.bd
+    </div>
+  </div>
+
+</div>
+
+<!-- Print button -->
+<button class="print-btn no-print" onclick="window.print()">
+  🖨️ Save as PDF
+</button>
+
+<script>
+  // Auto-print on load if ?print=1 is in URL
+  if (window.location.search.includes('print=1')) {
+    window.onload = () => window.print();
+  }
+</script>
+
+</body>
+</html>
